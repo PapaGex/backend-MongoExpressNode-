@@ -27,4 +27,32 @@ router.route('/add').post((req, res) => {
        .catch(err => res.status(400).jsono('Error: ' + err));
 });
 
+router.route('/:id').get((req, res) => {
+    Gecko.findById(req.params.id)
+        .then(exercise => res.json(gecko))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/:id').delete((req, res) => {
+    Gecko.findByIdAndDelete(req.params.id)
+        .then(() => res.json('Gecko deleted!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/update/:id').post((req, res) => {
+    Gecko.findById(req.params.id)
+        .then(gecko => {
+            gecko.geckoName = req.body.geckoName;
+            gecko.description = req.body.description;
+            gecko.hatchDate = Date.parse(req.body.hatchDate);
+            gecko.gender = req.body.gender;
+            gecko.purchasePrice = Number(req.body.purchasePrice);
+
+            gecko.save()
+                .then(() => res.json('Gecko updated!'))
+                .catch(err => res.status(400).json('Error: ' + err));
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
 module.exports = router;
